@@ -1,0 +1,69 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      SleepyTube
+    </ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-input type="text" placeholder="Enter Youtube Id" value="0Ddvxf9wM3o" #videoIdInput></ion-input>
+      <ion-button color="primary" (click)="onOpen(videoIdInput.value)">Open</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid>
+    <ion-row class="ion-justify-content-center" id="player-row">
+      <youtube-player #youtubePlayer [videoId]="videoId" [width]="playerWidth" [height]="playerHeight"
+        suggestedQuality="highres" [startSeconds]="startSeconds">
+      </youtube-player>
+    </ion-row>
+    <ion-row class="ion-justify-content-between" id="player-row">
+      <ion-col>
+        <ion-button color="primary" expand="block" (click)="onPlay()">Play</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button color="primary" expand="block" (click)="onPause()">Pause</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-justify-content-between" id="player-row">
+      <ion-col>
+        <ion-button color="primary" expand="block" (click)="onSkipForward()">&lt;</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          {{SKIP_TIME_IN_SECONDS}} sec
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-button color="primary" expand="block" (click)="onSkipForward()">&gt;</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-justify-content-between" id="player-row">
+      <ion-col>
+        <ion-item>
+          Timer
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-input type="number" value="10" min="1" max="60" #timeoutInput>
+        </ion-input>
+      </ion-col>
+      <ion-col>
+        <ion-item>min</ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-button (click)="onTimerStart(timeoutInput.value)">Start</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        Countdown:
+      </ion-col>
+      <ion-col>
+        {{timeout | minuteSeconds}}
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
