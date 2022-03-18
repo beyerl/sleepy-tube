@@ -1,0 +1,7 @@
+{
+  "name": "SleepyTube",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
