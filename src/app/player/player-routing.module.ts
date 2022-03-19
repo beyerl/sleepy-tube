@@ -1,3 +1,4 @@
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -13,6 +14,9 @@ const routes: Routes = [
 @NgModule({
   declarations: [],
   imports: [RouterModule.forChild(routes)],
+  providers: [
+    { provide: LocationStrategy, useClass: HashLocationStrategy }
+  ],
   exports: [RouterModule],
 })
 export class PlayerPageRoutingModule { }
