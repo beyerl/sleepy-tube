@@ -14,7 +14,7 @@ let apiLoaded = false;
 export class PlayerPage implements OnInit, AfterViewInit {
   // constants
   playerWidth: number = window.innerWidth
-  playerheight = 200
+  playerHeight = 200
   SKIP_TIME_IN_SECONDS = 30
   SECONDS_PER_MINUTE = 60
 
@@ -53,14 +53,14 @@ export class PlayerPage implements OnInit, AfterViewInit {
     ro.observe(document.getElementById("player-row"));
   }
 
-  async onOpen(videoId: string) {
-    const currentTimeFromStore: number = this.keyValueStoreService.get(videoId)
+  async onOpen(videoId: string | number) {
+    const currentTimeFromStore: number = this.keyValueStoreService.get(videoId as string)
 
     if (currentTimeFromStore) {
       this.startSeconds = currentTimeFromStore
     }
 
-    this.videoId = videoId
+    this.videoId = videoId as string
   }
 
   async onPlay() {
@@ -90,14 +90,14 @@ export class PlayerPage implements OnInit, AfterViewInit {
     this.youtubePlayer.seekTo(Math.round(this.youtubePlayer.getCurrentTime()) - this.SKIP_TIME_IN_SECONDS, true)
   }
 
-  onTimerStart(timeout: number) {
+  onTimerStart(timeout: number | string) {
     if (!isNil(this.timeoutIntervalId)) {
       clearInterval(this.timeoutIntervalId)
     }
 
     this.youtubePlayer.playVideo()
 
-    this.timeout = timeout * this.SECONDS_PER_MINUTE
+    this.timeout = Number(timeout) * this.SECONDS_PER_MINUTE
     this.timeoutIntervalId = setInterval(() => {
       if (this.timeout > 0) {
         this.timeout--
