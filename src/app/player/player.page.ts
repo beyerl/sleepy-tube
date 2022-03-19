@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { YouTubePlayer } from '@angular/youtube-player';
+import { Subscription } from 'rxjs';
 import { isNil } from '../helpers/utils';
-import { DataService, Message } from '../services/data.service';
 import { KeyValueStoreService } from '../services/key-value-store.service';
 
 let apiLoaded = false;
@@ -11,10 +11,10 @@ let apiLoaded = false;
   templateUrl: 'player.page.html',
   styleUrls: ['player.page.scss'],
 })
-export class PlayerPage implements OnInit, AfterViewInit {
+export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   // constants
   playerWidth: number = window.innerWidth
-  playerHeight = 200
+  playerHeight = 100
   SKIP_TIME_IN_SECONDS = 30
   SECONDS_PER_MINUTE = 60
 
@@ -22,10 +22,18 @@ export class PlayerPage implements OnInit, AfterViewInit {
   videoId: string
   startSeconds: number
   videoPlayerIntervalId: any //NodeJS.Timeout
+  isVideoLoaded = false
+  currentTime: number = 0
+  videoPlayerReadySubscription: Subscription
+
+  // play button
+  isPauseButton = false
+  hasPlayed = false
 
   // timer
   timeout: number
   timeoutIntervalId: any //NodeJS.Timeout
+  isTimerRunning: boolean = false
 
   @ViewChild('youtubePlayer') youtubePlayer: YouTubePlayer
 
@@ -53,7 +61,19 @@ export class PlayerPage implements OnInit, AfterViewInit {
     ro.observe(document.getElementById("player-row"));
   }
 
+  ngOnDestroy(): void {
+    this.videoPlayerReadySubscription.unsubscribe()
+  }
+
+  // Getters
+  get RemainingTime() {
+    return !isNil(this.youtubePlayer) ? Math.round(this.youtubePlayer.getDuration()) - this.currentTime : 0
+  }
+
+  // Clickhandlers
   async onOpen(videoId: string | number) {
+    this.isVideoLoaded = false
+    this.hasPlayed = false
     const currentTimeFromStore: number = this.keyValueStoreService.get(videoId as string)
 
     if (currentTimeFromStore) {
@@ -61,6 +81,18 @@ export class PlayerPage implements OnInit, AfterViewInit {
     }
 
     this.videoId = videoId as string
+
+    this.videoPlayerReadySubscription = this.youtubePlayer.ready.subscribe(() => this.isVideoLoaded = true)
+  }
+
+  async onPlayOrPause() {
+    if (!this.isPauseButton) {
+      await this.onPlay()
+    } else {
+      this.onPause()
+    }
+
+    this.isPauseButton = !this.isPauseButton
   }
 
   async onPlay() {
@@ -69,8 +101,12 @@ export class PlayerPage implements OnInit, AfterViewInit {
     }
 
     this.youtubePlayer.playVideo()
+    this.hasPlayed = true
 
-    this.videoPlayerIntervalId = setInterval(() => this.keyValueStoreService.set(this.videoId, Math.round(this.youtubePlayer.getCurrentTime())), 5000)
+    this.videoPlayerIntervalId = setInterval(() => {
+      this.currentTime = Math.round(this.youtubePlayer.getCurrentTime())
+      this.keyValueStoreService.set(this.videoId, this.currentTime)
+    }, 1000)
   }
 
   onPause() {
@@ -83,11 +119,11 @@ export class PlayerPage implements OnInit, AfterViewInit {
   }
 
   onSkipForward() {
-    this.youtubePlayer.seekTo(Math.round(this.youtubePlayer.getCurrentTime()) + this.SKIP_TIME_IN_SECONDS, true)
+    this.youtubePlayer.seekTo(Math.round(Number(this.keyValueStoreService.get(this.videoId as string))) + this.SKIP_TIME_IN_SECONDS, true)
   }
 
   onSkipBackward() {
-    this.youtubePlayer.seekTo(Math.round(this.youtubePlayer.getCurrentTime()) - this.SKIP_TIME_IN_SECONDS, true)
+    this.youtubePlayer.seekTo(Math.round(Number(this.keyValueStoreService.get(this.videoId as string))) - this.SKIP_TIME_IN_SECONDS, true)
   }
 
   onTimerStart(timeout: number | string) {
@@ -95,7 +131,12 @@ export class PlayerPage implements OnInit, AfterViewInit {
       clearInterval(this.timeoutIntervalId)
     }
 
-    this.youtubePlayer.playVideo()
+    this.isTimerRunning = true;
+
+    if (!this.isPauseButton) {
+      this.onPlay()
+      this.isPauseButton = !this.isPauseButton
+    }
 
     this.timeout = Number(timeout) * this.SECONDS_PER_MINUTE
     this.timeoutIntervalId = setInterval(() => {
@@ -104,6 +145,7 @@ export class PlayerPage implements OnInit, AfterViewInit {
       } else {
         clearInterval(this.timeoutIntervalId)
         this.youtubePlayer.pauseVideo()
+        this.isTimerRunning = false
       }
     }, 1000)
   }

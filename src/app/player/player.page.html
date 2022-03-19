@@ -7,13 +7,29 @@
   <ion-toolbar>
     <ion-buttons>
       <ion-input type="text" placeholder="Enter Youtube Id" value="0Ddvxf9wM3o" #videoIdInput></ion-input>
-      <ion-button color="primary" (click)="onOpen(videoIdInput.value)">Open</ion-button>
+      <ion-button color="primary" (click)="onOpen(videoIdInput.value)" [disabled]="videoIdInput.value === this.videoId">
+        Open
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-img src="https://img.youtube.com/vi/{{videoId}}/hqdefault.jpg">
+        </ion-img>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-justify-content-between">
+      <ion-col>
+        elapsed: {{currentTime | minuteSeconds}}
+      </ion-col>
+      <ion-col class="ion-text-end">
+        remaining: {{RemainingTime | minuteSeconds}}
+      </ion-col>
+    </ion-row>
     <ion-row class="ion-justify-content-center" id="player-row">
       <youtube-player #youtubePlayer [videoId]="videoId" [width]="playerWidth" [height]="playerHeight"
         suggestedQuality="highres" [startSeconds]="startSeconds">
@@ -21,23 +37,20 @@
     </ion-row>
     <ion-row class="ion-justify-content-between" id="player-row">
       <ion-col>
-        <ion-button color="primary" expand="block" (click)="onPlay()">Play</ion-button>
+        <ion-button color="primary" expand="block" (click)="onSkipBackward()" [disabled]="!isVideoLoaded || !hasPlayed">
+          <ion-icon name="chevron-back-outline"></ion-icon> {{SKIP_TIME_IN_SECONDS}}s
+        </ion-button>
       </ion-col>
       <ion-col>
-        <ion-button color="primary" expand="block" (click)="onPause()">Pause</ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row class="ion-justify-content-between" id="player-row">
-      <ion-col>
-        <ion-button color="primary" expand="block" (click)="onSkipForward()">&lt;</ion-button>
+        <ion-button color="primary" expand="block" (click)="onPlayOrPause()" [disabled]="!isVideoLoaded">
+          <ion-icon *ngIf="!isPauseButton" name="play-outline"></ion-icon>
+          <ion-icon *ngIf="isPauseButton" name="pause-outline"></ion-icon>
+        </ion-button>
       </ion-col>
       <ion-col>
-        <ion-item>
-          {{SKIP_TIME_IN_SECONDS}} sec
-        </ion-item>
-      </ion-col>
-      <ion-col>
-        <ion-button color="primary" expand="block" (click)="onSkipForward()">&gt;</ion-button>
+        <ion-button color="primary" expand="block" (click)="onSkipForward()" [disabled]="!isVideoLoaded || !hasPlayed">
+          {{SKIP_TIME_IN_SECONDS}}s <ion-icon name="chevron-forward-outline"></ion-icon>
+        </ion-button>
       </ion-col>
     </ion-row>
     <ion-row class="ion-justify-content-between" id="player-row">
@@ -54,10 +67,10 @@
         <ion-item>min</ion-item>
       </ion-col>
       <ion-col>
-        <ion-button (click)="onTimerStart(timeoutInput.value)">Start</ion-button>
+        <ion-button (click)="onTimerStart(timeoutInput.value)" [disabled]="!isVideoLoaded">Start</ion-button>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row *ngIf="isTimerRunning">
       <ion-col>
         Countdown:
       </ion-col>
