@@ -24,10 +24,10 @@
     </ion-row>
     <ion-row class="ion-justify-content-between">
       <ion-col>
-        elapsed: {{currentTime | minuteSeconds}}
+        elapsed: {{currentTime | hourMinuteSeconds}}
       </ion-col>
       <ion-col class="ion-text-end">
-        remaining: {{RemainingTime | minuteSeconds}}
+        remaining: {{RemainingTime | hourMinuteSeconds}}
       </ion-col>
     </ion-row>
     <ion-row class="ion-justify-content-center" id="player-row">
