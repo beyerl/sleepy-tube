@@ -8,6 +8,7 @@ import { PlayerPageRoutingModule } from './player-routing.module';
 import { MessageComponentModule } from '../message/message.module';
 import { YouTubePlayerModule } from '@angular/youtube-player';
 import { MinuteSecondsPipe } from '../pipes/minute-seconds.pipe';
+import { HourMinuteSecondsPipe } from '../pipes/hour-minute-seconds.pipe';
 
 @NgModule({
   imports: [
@@ -18,6 +19,6 @@ import { MinuteSecondsPipe } from '../pipes/minute-seconds.pipe';
     PlayerPageRoutingModule,
     YouTubePlayerModule
   ],
-  declarations: [PlayerPage, MinuteSecondsPipe]
+  declarations: [PlayerPage, MinuteSecondsPipe, HourMinuteSecondsPipe]
 })
 export class PlayerPageModule { }
