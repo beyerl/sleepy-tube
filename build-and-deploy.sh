@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ng build &&
+ng build --base-href=sleepy-tube &&
 git add -A &&
 git commit -m "build and deploy" &&
 git push &&
