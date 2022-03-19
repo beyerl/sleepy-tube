@@ -35,20 +35,23 @@
         suggestedQuality="highres" [startSeconds]="startSeconds">
       </youtube-player>
     </ion-row>
-    <ion-row class="ion-justify-content-between" id="player-row">
+    <ion-row class="ion-justify-content-between ion-align-items-center" id="player-row">
       <ion-col>
-        <ion-button color="primary" expand="block" (click)="onSkipBackward()" [disabled]="!isVideoLoaded || !hasPlayed">
+        <ion-button color="primary" expand="block" (click)="onSkipBackward()" [disabled]="!isVideoLoaded || !hasPlayed"
+          shape="round">
           <ion-icon name="chevron-back-outline"></ion-icon> {{SKIP_TIME_IN_SECONDS}}s
         </ion-button>
       </ion-col>
       <ion-col>
-        <ion-button color="primary" expand="block" (click)="onPlayOrPause()" [disabled]="!isVideoLoaded">
+        <ion-button color="primary" expand="block" (click)="onPlayOrPause()" [disabled]="!isVideoLoaded" shape="round"
+          size="large">
           <ion-icon *ngIf="!isPauseButton" name="play-outline"></ion-icon>
           <ion-icon *ngIf="isPauseButton" name="pause-outline"></ion-icon>
         </ion-button>
       </ion-col>
       <ion-col>
-        <ion-button color="primary" expand="block" (click)="onSkipForward()" [disabled]="!isVideoLoaded || !hasPlayed">
+        <ion-button color="primary" expand="block" (click)="onSkipForward()" [disabled]="!isVideoLoaded || !hasPlayed"
+          shape="round">
           {{SKIP_TIME_IN_SECONDS}}s <ion-icon name="chevron-forward-outline"></ion-icon>
         </ion-button>
       </ion-col>
