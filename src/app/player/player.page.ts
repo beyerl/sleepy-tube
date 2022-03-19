@@ -97,7 +97,7 @@ export class PlayerPage implements OnInit, AfterViewInit {
 
     this.youtubePlayer.playVideo()
 
-    this.timeout = timeout // * this.SECONDS_PER_MINUTE
+    this.timeout = timeout * this.SECONDS_PER_MINUTE
     this.timeoutIntervalId = setInterval(() => {
       if (this.timeout > 0) {
         this.timeout--
