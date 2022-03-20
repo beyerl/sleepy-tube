@@ -31,7 +31,7 @@ export class TimerComponent implements OnInit {
     this.isTimerModalOpen = true
   }
 
-  onTimerStart(interval: string) {
+  onTimerStart(interval: string | number) {
     if (!isNil(this.timeoutIntervalId)) {
       clearInterval(this.timeoutIntervalId)
     }
