@@ -9,6 +9,8 @@ import { MessageComponentModule } from '../message/message.module';
 import { YouTubePlayerModule } from '@angular/youtube-player';
 import { MinuteSecondsPipe } from '../pipes/minute-seconds.pipe';
 import { HourMinuteSecondsPipe } from '../pipes/hour-minute-seconds.pipe';
+import { ScrubberComponent } from '../components/scrubber/scrubber.component';
+import { TimerComponent } from '../components/timer/timer.component';
 
 @NgModule({
   imports: [
@@ -19,6 +21,6 @@ import { HourMinuteSecondsPipe } from '../pipes/hour-minute-seconds.pipe';
     PlayerPageRoutingModule,
     YouTubePlayerModule
   ],
-  declarations: [PlayerPage, MinuteSecondsPipe, HourMinuteSecondsPipe]
+  declarations: [PlayerPage, MinuteSecondsPipe, HourMinuteSecondsPipe, ScrubberComponent, TimerComponent]
 })
 export class PlayerPageModule { }

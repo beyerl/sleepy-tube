@@ -1,0 +1,9 @@
+<div *ngIf="!disabled; else disabledTemplate" class="scrubber__click-layer" (click)="onProgressClick($event)"
+  #scrubberClickLayer>
+  <ion-progress-bar [value]="value" [buffer]="buffer"></ion-progress-bar>
+</div>
+<ng-template #disabledTemplate>
+  <div class="scrubber__click-layer scrubber__click-layer-disabled">
+    <ion-progress-bar class="scrubber__progress-bar-disabled"></ion-progress-bar>
+  </div>
+</ng-template>

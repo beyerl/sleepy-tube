@@ -1,0 +1,46 @@
+<ion-button color="primary" expand="block" [disabled]="disabled" shape="round" (click)="onTimerModalClick()">
+  Timer
+</ion-button>
+<ion-grid *ngIf="isTimerRunning">
+  <ion-row>
+    <ion-col>
+      Countdown:
+    </ion-col>
+    <ion-col>
+      {{timeout | minuteSeconds}}
+    </ion-col>
+  </ion-row>
+</ion-grid>
+<ion-modal [isOpen]="isTimerModalOpen" [swipeToClose]="true" [presentingElement]="routerOutlet.nativeEl">
+  <ng-template>
+    <ion-content>
+      <ion-list>
+        <ion-item *ngFor="let interval of timerIntervals">
+          <ion-buttons>
+            <ion-button color="dark" expand="fullwidth" (click)="onTimerStart(interval)">{{interval}} Minutes
+            </ion-button>
+          </ion-buttons>
+        </ion-item>
+      </ion-list>
+      <ion-grid>
+        <ion-row class="ion-justify-content-between" id="player-row">
+          <ion-col>
+            <ion-item>
+              Custom:
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-input type="number" value="10" min="1" max="60" #timeoutInput>
+            </ion-input>
+          </ion-col>
+          <ion-col>
+            <ion-item>min</ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-button (click)="onTimerStart(timeoutInput.value)">Start</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-content>
+  </ng-template>
+</ion-modal>

@@ -1,6 +1,7 @@
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { ScrubberComponent } from '../components/scrubber/scrubber.component';
 
 import { PlayerPage } from './player.page';
 

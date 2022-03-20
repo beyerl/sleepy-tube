@@ -23,14 +23,20 @@
       </ion-col>
     </ion-row>
     <ion-row class="ion-justify-content-between">
-      <ion-col>
+      <ion-col class="font-size-sm">
         elapsed: {{currentTime | hourMinuteSeconds}}
       </ion-col>
-      <ion-col class="ion-text-end">
+      <ion-col class="font-size-sm ion-text-end">
         remaining: {{RemainingTime | hourMinuteSeconds}}
       </ion-col>
     </ion-row>
-    <ion-row class="ion-justify-content-center" id="player-row">
+    <ion-row>
+      <ion-col>
+        <app-scrubber (clicked)="onScrubberClick($event)" [value]="Progress" [buffer]="Buffer"
+          [disabled]="!isVideoLoaded"></app-scrubber>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-justify-content-center" id="player-row" [hidden]="true">
       <youtube-player #youtubePlayer [videoId]="videoId" [width]="playerWidth" [height]="playerHeight"
         suggestedQuality="highres" [startSeconds]="startSeconds">
       </youtube-player>
@@ -56,29 +62,10 @@
         </ion-button>
       </ion-col>
     </ion-row>
-    <ion-row class="ion-justify-content-between" id="player-row">
+    <ion-row>
       <ion-col>
-        <ion-item>
-          Timer
-        </ion-item>
-      </ion-col>
-      <ion-col>
-        <ion-input type="number" value="10" min="1" max="60" #timeoutInput>
-        </ion-input>
-      </ion-col>
-      <ion-col>
-        <ion-item>min</ion-item>
-      </ion-col>
-      <ion-col>
-        <ion-button (click)="onTimerStart(timeoutInput.value)" [disabled]="!isVideoLoaded">Start</ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="isTimerRunning">
-      <ion-col>
-        Countdown:
-      </ion-col>
-      <ion-col>
-        {{timeout | minuteSeconds}}
+        <app-timer (start)="onTimerStart()" (elapsed)="onTimerElapsed()" [disabled]="!isVideoLoaded" #timer>
+        </app-timer>
       </ion-col>
     </ion-row>
   </ion-grid>

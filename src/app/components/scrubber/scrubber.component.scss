@@ -1,0 +1,19 @@
+.scrubber {
+    &__click-layer{
+        height: 30px;
+        background-color: var(--ion-color-light);
+        display: flex;
+        align-items: center;
+
+        &-disabled{
+            background-color: var(--ion-color-white);
+        }
+    }
+
+    &__progress-bar{
+        &-disabled{
+            background-color: var(--ion-color-light);
+        }
+    }
+}
+

@@ -16,7 +16,6 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   playerWidth: number = window.innerWidth
   playerHeight = 100
   SKIP_TIME_IN_SECONDS = 30
-  SECONDS_PER_MINUTE = 60
 
   // videoplayer
   videoId: string
@@ -29,11 +28,6 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   // play button
   isPauseButton = false
   hasPlayed = false
-
-  // timer
-  timeout: number
-  timeoutIntervalId: any //NodeJS.Timeout
-  isTimerRunning: boolean = false
 
   @ViewChild('youtubePlayer') youtubePlayer: YouTubePlayer
 
@@ -70,6 +64,15 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
     return !isNil(this.youtubePlayer) ? Math.round(this.youtubePlayer.getDuration()) - this.currentTime : 0
   }
 
+  get Progress() {
+    return !isNil(this.youtubePlayer) ? this.youtubePlayer.getCurrentTime() / this.youtubePlayer.getDuration() : 0
+  }
+
+  get Buffer() {
+    return !isNil(this.youtubePlayer) ? this.youtubePlayer.getVideoLoadedFraction() : 0
+
+  }
+
   // Clickhandlers
   async onOpen(videoId: string | number) {
     this.isVideoLoaded = false
@@ -82,7 +85,18 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
 
     this.videoId = videoId as string
 
-    this.videoPlayerReadySubscription = this.youtubePlayer.ready.subscribe(() => this.isVideoLoaded = true)
+    this.videoPlayerReadySubscription = this.youtubePlayer.ready.subscribe(async () => {
+      this.isVideoLoaded = true;
+    })
+  }
+
+  onScrubberClick(clickedPercentage: number) {
+    this.youtubePlayer.seekTo(this.youtubePlayer.getDuration() * clickedPercentage, true)
+
+    if (!this.isPauseButton) {
+      this.onPlay()
+      this.isPauseButton = !this.isPauseButton
+    }
   }
 
   async onPlayOrPause() {
@@ -126,28 +140,15 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
     this.youtubePlayer.seekTo(Math.round(Number(this.keyValueStoreService.get(this.videoId as string))) - this.SKIP_TIME_IN_SECONDS, true)
   }
 
-  onTimerStart(timeout: number | string) {
-    if (!isNil(this.timeoutIntervalId)) {
-      clearInterval(this.timeoutIntervalId)
-    }
-
-    this.isTimerRunning = true;
-
+  onTimerStart() {
     if (!this.isPauseButton) {
       this.onPlay()
       this.isPauseButton = !this.isPauseButton
     }
+  }
 
-    this.timeout = Number(timeout) * this.SECONDS_PER_MINUTE
-    this.timeoutIntervalId = setInterval(() => {
-      if (this.timeout > 0) {
-        this.timeout--
-      } else {
-        clearInterval(this.timeoutIntervalId)
-        this.youtubePlayer.pauseVideo()
-        this.isTimerRunning = false
-      }
-    }, 1000)
+  onTimerElapsed() {
+    this.youtubePlayer.pauseVideo()
   }
 }
 
