@@ -64,7 +64,8 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <app-timer (start)="onTimerStart()" (elapsed)="onTimerElapsed()" [disabled]="!isVideoLoaded" #timer>
+        <app-timer (start)="onTimerStart()" (elapsed)="onTimerElapsed()" (fadeout)="onTimerFadeOut()"
+          [disabled]="!isVideoLoaded" #timer>
         </app-timer>
       </ion-col>
     </ion-row>

@@ -23,7 +23,10 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   videoPlayerIntervalId: any //NodeJS.Timeout
   isVideoLoaded = false
   currentTime: number = 0
+  initialVolume: number
+  currentVolume: number
   videoPlayerReadySubscription: Subscription
+  reinitializeVolume = false
 
   // play button
   isPauseButton = false
@@ -95,7 +98,6 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
 
     if (!this.isPauseButton) {
       this.onPlay()
-      this.isPauseButton = !this.isPauseButton
     }
   }
 
@@ -105,14 +107,18 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.onPause()
     }
-
-    this.isPauseButton = !this.isPauseButton
   }
 
   async onPlay() {
     if (!isNil(this.videoPlayerIntervalId)) {
       clearInterval(this.videoPlayerIntervalId)
     }
+
+    if (this.reinitializeVolume) {
+      this.youtubePlayer.setVolume(this.initialVolume)
+    }
+
+    this.initialVolume = this.youtubePlayer.getVolume()
 
     this.youtubePlayer.playVideo()
     this.hasPlayed = true
@@ -121,6 +127,8 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
       this.currentTime = Math.round(this.youtubePlayer.getCurrentTime())
       this.keyValueStoreService.set(this.videoId, this.currentTime)
     }, 1000)
+
+    this.isPauseButton = !this.isPauseButton
   }
 
   onPause() {
@@ -130,6 +138,8 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
     if (!isNil(this.videoPlayerIntervalId)) {
       clearInterval(this.videoPlayerIntervalId)
     }
+
+    this.isPauseButton = !this.isPauseButton
   }
 
   onSkipForward() {
@@ -143,12 +153,21 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   onTimerStart() {
     if (!this.isPauseButton) {
       this.onPlay()
-      this.isPauseButton = !this.isPauseButton
     }
   }
 
+  onTimerFadeOut() {
+    const fadeOutDuration = 30
+    const fadeOutStepVolume = this.initialVolume / fadeOutDuration;
+
+    this.youtubePlayer.setVolume(this.youtubePlayer.getVolume() - fadeOutStepVolume)
+  }
+
   onTimerElapsed() {
-    this.youtubePlayer.pauseVideo()
+    console.log("timer elpased")
+    this.onSkipBackward()
+    this.onPause()
+    this.reinitializeVolume = true
   }
 }
 

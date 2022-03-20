@@ -11,7 +11,8 @@
     </ion-col>
   </ion-row>
 </ion-grid>
-<ion-modal [isOpen]="isTimerModalOpen" [swipeToClose]="true" [presentingElement]="routerOutlet.nativeEl">
+<ion-modal [isOpen]="isTimerModalOpen" [swipeToClose]="true" [presentingElement]="routerOutlet.nativeEl"
+  (didDismiss)="onModalDismiss()">
   <ng-template>
     <ion-content>
       <ion-list>

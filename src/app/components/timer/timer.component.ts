@@ -14,6 +14,7 @@ export class TimerComponent implements OnInit {
   @Input() disabled: boolean
 
   @Output() start = new EventEmitter<number>()
+  @Output() fadeout = new EventEmitter<void>()
   @Output() elapsed = new EventEmitter<number>()
 
   SECONDS_PER_MINUTE = 60
@@ -44,13 +45,21 @@ export class TimerComponent implements OnInit {
     this.timeoutIntervalId = setInterval(() => {
       if (this.timeout > 0) {
         this.timeout--
-      } else {
+      }
+      else {
         clearInterval(this.timeoutIntervalId)
         this.elapsed.emit()
         this.isTimerRunning = false
       }
+      if (this.timeout <= 30) {
+        this.fadeout.emit()
+      }
     }, 1000)
 
+    this.onModalDismiss()
+  }
+
+  onModalDismiss() {
     this.isTimerModalOpen = false
   }
 }
