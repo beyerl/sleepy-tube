@@ -27,18 +27,18 @@ export class TimerComponent implements OnInit {
 
   ngOnInit() { }
 
-  private onTimerModalClick() {
+  onTimerModalClick() {
     this.isTimerModalOpen = true
   }
 
-  private onTimerStart(interval: number) {
+  onTimerStart(interval: string) {
     if (!isNil(this.timeoutIntervalId)) {
       clearInterval(this.timeoutIntervalId)
     }
 
     this.isTimerRunning = true;
 
-    this.start.emit(interval)
+    this.start.emit(Number(interval))
 
     this.timeout = Number(interval) * this.SECONDS_PER_MINUTE
     this.timeoutIntervalId = setInterval(() => {
