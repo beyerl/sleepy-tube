@@ -164,9 +164,8 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onTimerElapsed() {
-    console.log("timer elpased")
-    this.onSkipBackward()
     this.onPause()
+    this.keyValueStoreService.set(this.videoId, Math.round(this.keyValueStoreService.get(this.videoId) - 15))
     this.reinitializeVolume = true
   }
 }
