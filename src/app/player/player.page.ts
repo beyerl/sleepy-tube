@@ -114,14 +114,14 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
       clearInterval(this.videoPlayerIntervalId)
     }
 
-    if (this.reinitializeVolume) {
-      this.youtubePlayer.setVolume(this.initialVolume)
-    }
-
-    this.initialVolume = this.youtubePlayer.getVolume()
-
     this.youtubePlayer.playVideo()
     this.hasPlayed = true
+
+    if (this.reinitializeVolume) {
+      this.youtubePlayer.setVolume(this.initialVolume)
+    } else {
+      this.initialVolume = this.youtubePlayer.getVolume()
+    }
 
     this.videoPlayerIntervalId = setInterval(() => {
       this.currentTime = Math.round(this.youtubePlayer.getCurrentTime())
