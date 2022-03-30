@@ -1,12 +1,12 @@
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { PlayerPage } from './player.page';
+import { SearchPageComponent } from './search.page.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: PlayerPage
+    component: SearchPageComponent
   }
 ];
 
@@ -18,4 +18,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule],
 })
-export class PlayerPageRoutingModule { }
+export class SearchPageRoutingModule { }
