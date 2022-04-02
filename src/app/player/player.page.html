@@ -1,19 +1,3 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      SleepyTube
-    </ion-title>
-  </ion-toolbar>
-  <ion-toolbar>
-    <ion-buttons>
-      <ion-input type="text" placeholder="Enter Youtube Id" value="0Ddvxf9wM3o" #videoIdInput></ion-input>
-      <ion-button color="primary" (click)="onOpen(videoIdInput.value)" [disabled]="videoIdInput.value === this.videoId">
-        Open
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
   <ion-grid>
     <ion-row>
@@ -43,21 +27,19 @@
     </ion-row>
     <ion-row class="ion-justify-content-between ion-align-items-center" id="player-row">
       <ion-col>
-        <ion-button color="primary" expand="block" (click)="onSkipBackward()" [disabled]="!isVideoLoaded || !hasPlayed"
-          shape="round">
+        <ion-button color="primary" expand="block" (click)="onSkipBackward()" [disabled]="!isPlaying" shape="round">
           <ion-icon name="chevron-back-outline"></ion-icon> {{SKIP_TIME_IN_SECONDS}}s
         </ion-button>
       </ion-col>
       <ion-col>
         <ion-button color="primary" expand="block" (click)="onPlayOrPause()" [disabled]="!isVideoLoaded" shape="round"
           size="large">
-          <ion-icon *ngIf="!isPauseButton" name="play-outline"></ion-icon>
-          <ion-icon *ngIf="isPauseButton" name="pause-outline"></ion-icon>
+          <ion-icon *ngIf="!isPlaying" name="play-outline"></ion-icon>
+          <ion-icon *ngIf="isPlaying" name="pause-outline"></ion-icon>
         </ion-button>
       </ion-col>
       <ion-col>
-        <ion-button color="primary" expand="block" (click)="onSkipForward()" [disabled]="!isVideoLoaded || !hasPlayed"
-          shape="round">
+        <ion-button color="primary" expand="block" (click)="onSkipForward()" [disabled]="!isPlaying" shape="round">
           {{SKIP_TIME_IN_SECONDS}}s <ion-icon name="chevron-forward-outline"></ion-icon>
         </ion-button>
       </ion-col>

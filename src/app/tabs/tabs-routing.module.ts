@@ -22,7 +22,7 @@ const routes: Routes = [
       // },
       {
         path: '',
-        redirectTo: '/tabs/player',
+        redirectTo: '/tabs/search',
         pathMatch: 'full'
       }
     ]

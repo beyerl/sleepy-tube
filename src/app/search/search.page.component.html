@@ -1,11 +1,32 @@
-<div *ngFor="let video of videos" class="col-xl-3 col-md-6 mb-4">
-  <div class="card border-0 shadow vh-50"><a href="https://www.youtube.com/watch?v={{video.id.videoId}}"
-      target="_blank"><img [src]="video.snippet.thumbnails.medium.url" class="card-img-top" alt="..."></a>
-    <div class="card-body text-center">
-      <h5 class="card-title mb-0"><a
-          href="https://www.youtube.com/watch?v={{video.id.videoId}}">{{video.snippet.title}}</a></h5>
-      <div class="card-text text-black-50">{{video.snippet.description.slice(0, 100)}}</div>
-      <p class="card-text">{{video.snippet.description}}</p>
-    </div>
-  </div>
-</div>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      SleepyTube
+    </ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar placeholder="Search in Youtube" (ionInput)="onSearchInput($event)" [debounce​]="1000">
+    </ion-searchbar>
+  </ion-toolbar>
+  <!-- <ion-toolbar>
+    <ion-buttons>
+      <ion-input type="text" placeholder="Search in Youtube" #videoIdInput></ion-input>
+      <ion-button color="primary" (click)="onOpen(videoIdInput.value)" [disabled]="videoIdInput.value === this.videoId">
+        Open
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar> -->
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list lines="none">
+    <ion-item *ngFor="let result of results">
+      <ion-card button (click)="onSearchResultClick(result.id)">
+        <ion-img [src]="result.imageSrc"></ion-img>
+        <ion-card-content>
+          {{result.title}}
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+  </ion-list>
+</ion-content>

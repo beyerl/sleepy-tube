@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
 import { YouTubePlayer } from '@angular/youtube-player';
 import { Subscription } from 'rxjs';
 import { isNil } from '../helpers/utils';
@@ -29,12 +30,11 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   reinitializeVolume = false
 
   // play button
-  isPauseButton = false
-  hasPlayed = false
+  isPlaying = false
 
   @ViewChild('youtubePlayer') youtubePlayer: YouTubePlayer
 
-  constructor(private keyValueStoreService: KeyValueStoreService) { }
+  constructor(private keyValueStoreService: KeyValueStoreService, private activatedRoute: ActivatedRoute) { }
 
   ngOnInit() {
     if (!apiLoaded) {
@@ -45,6 +45,8 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
       document.body.appendChild(tag);
       apiLoaded = true;
     }
+    this.activatedRoute.queryParams
+      .subscribe(queryParams => this.videoId = queryParams.v)
   }
 
   ngAfterViewInit(): void {
@@ -79,7 +81,6 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   // Clickhandlers
   async onOpen(videoId: string | number) {
     this.isVideoLoaded = false
-    this.hasPlayed = false
     const currentTimeFromStore: number = this.keyValueStoreService.get(videoId as string)
 
     if (currentTimeFromStore) {
@@ -96,13 +97,13 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   onScrubberClick(clickedPercentage: number) {
     this.youtubePlayer.seekTo(this.youtubePlayer.getDuration() * clickedPercentage, true)
 
-    if (!this.isPauseButton) {
+    if (!this.isPlaying) {
       this.onPlay()
     }
   }
 
   async onPlayOrPause() {
-    if (!this.isPauseButton) {
+    if (!this.isPlaying) {
       await this.onPlay()
     } else {
       this.onPause()
@@ -115,7 +116,6 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.youtubePlayer.playVideo()
-    this.hasPlayed = true
 
     if (this.reinitializeVolume) {
       this.youtubePlayer.setVolume(this.initialVolume)
@@ -128,7 +128,7 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
       this.keyValueStoreService.set(this.videoId, this.currentTime)
     }, 1000)
 
-    this.isPauseButton = !this.isPauseButton
+    this.isPlaying = !this.isPlaying
   }
 
   onPause() {
@@ -139,7 +139,7 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
       clearInterval(this.videoPlayerIntervalId)
     }
 
-    this.isPauseButton = !this.isPauseButton
+    this.isPlaying = !this.isPlaying
   }
 
   onSkipForward() {
@@ -151,7 +151,7 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onTimerStart() {
-    if (!this.isPauseButton) {
+    if (!this.isPlaying) {
       this.onPlay()
     }
   }
