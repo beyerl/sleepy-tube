@@ -1,29 +1,27 @@
 import { Injectable } from '@angular/core';
 import { isNil } from '../helpers/utils';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class KeyValueStoreService {
 
   constructor() { }
 
-  set<T>(key: string, value: T): void{
+  set<T>(key: string, value: T): void {
     localStorage.setItem(key, JSON.stringify(value));
   }
 
-  get(key:string): any{
+  get(key: string): any {
     const value = localStorage.getItem(key)
-    if(isNil(value))
+    if (isNil(value))
       return null
     return JSON.parse(value)
   }
 
-  clear(): void{
+  clear(): void {
     localStorage.clear()
   }
 
-  delete(key:string): void{
+  delete(key: string): void {
     localStorage.removeItem(key)
   }
 }

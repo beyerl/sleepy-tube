@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { mapYoutubeRawDataToVideo } from '../mappers/search.mapper';
 import { Video } from '../models/video.model';
+import { PlayerService } from '../services/player.service';
 import { YoutubeService } from '../services/youtube.service';
 
 @Component({
@@ -14,20 +15,23 @@ import { YoutubeService } from '../services/youtube.service';
 })
 export class SearchPageComponent implements OnInit {
 
+  searchTerm: string
   results: Video[] = []
 
-  constructor(private youtubeService: YoutubeService, private router: Router) { }
+  constructor(private youtubeService: YoutubeService, private router: Router, private playerService: PlayerService) { }
 
   async ngOnInit() { }
 
-  async onSearchInput(event: any) {
-    const input = event.currentTarget.value
+  // Event Handlers
+  async onSearch(searchTerm: string | number) {
+    this.searchTerm = searchTerm as string
 
-    this.results = (await this.youtubeService.search(input, 15))["items"]
+    this.results = (await this.youtubeService.search(searchTerm as string, 15))["items"]
       .map(rawData => mapYoutubeRawDataToVideo(rawData))
   }
 
-  onSearchResultClick(videoId: string) {
-    this.router.navigateByUrl(`/tabs/player?v=${videoId}`)
+  onSearchResultClick(video: Video) {
+    this.playerService.setCurrentVideo(video)
+    this.router.navigateByUrl(`/tabs/player`)
   }
 }

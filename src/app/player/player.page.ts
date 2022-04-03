@@ -3,7 +3,9 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { YouTubePlayer } from '@angular/youtube-player';
 import { Subscription } from 'rxjs';
 import { isNil } from '../helpers/utils';
+import { Video } from '../models/video.model';
 import { KeyValueStoreService } from '../services/key-value-store.service';
+import { PlayerService } from '../services/player.service';
 
 let apiLoaded = false;
 
@@ -29,12 +31,16 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   videoPlayerReadySubscription: Subscription
   reinitializeVolume = false
 
-  // play button
+  // player state
   isPlaying = false
+  playerServiceSubscription: Subscription
+
 
   @ViewChild('youtubePlayer') youtubePlayer: YouTubePlayer
 
-  constructor(private keyValueStoreService: KeyValueStoreService, private activatedRoute: ActivatedRoute) { }
+  constructor(private keyValueStoreService: KeyValueStoreService, private playerService: PlayerService) {
+    console.log(this.keyValueStoreService.get("currentVideo"))
+  }
 
   ngOnInit() {
     if (!apiLoaded) {
@@ -45,8 +51,6 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
       document.body.appendChild(tag);
       apiLoaded = true;
     }
-    this.activatedRoute.queryParams
-      .subscribe(queryParams => this.videoId = queryParams.v)
   }
 
   ngAfterViewInit(): void {
@@ -58,6 +62,9 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
 
     // Observe one or multiple elements
     ro.observe(document.getElementById("player-row"));
+
+    this.playerServiceSubscription = this.playerService.getCurrentVideoAsObserveable()
+      .subscribe(video => this.onCurrentVideoChange(video))
   }
 
   ngOnDestroy(): void {
@@ -78,16 +85,16 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  // Clickhandlers
-  async onOpen(videoId: string | number) {
+  // Event handlers
+  async onCurrentVideoChange(video: Video) {
     this.isVideoLoaded = false
-    const currentTimeFromStore: number = this.keyValueStoreService.get(videoId as string)
+    const currentTimeFromStore: number = this.keyValueStoreService.get(video.id as string)
 
     if (currentTimeFromStore) {
       this.startSeconds = currentTimeFromStore
     }
 
-    this.videoId = videoId as string
+    this.videoId = video.id as string
 
     this.videoPlayerReadySubscription = this.youtubePlayer.ready.subscribe(async () => {
       this.isVideoLoaded = true;
