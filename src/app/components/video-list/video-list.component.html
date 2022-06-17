@@ -1,0 +1,13 @@
+<ion-list lines="none">
+  <ion-item *ngFor="let video of videos">
+    <ion-card button (click)="onVideoClick(video)">
+      <ion-img [src]="video.imageSrc"></ion-img>
+      <ion-card-content>
+        {{video.title}}
+      </ion-card-content>
+    </ion-card>
+  </ion-item>
+</ion-list>
+<div *ngIf="videos.length == 0">
+  no results
+</div>

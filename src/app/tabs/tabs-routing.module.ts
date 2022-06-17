@@ -16,6 +16,10 @@ const routes: Routes = [
         loadChildren: () => import('../search/search.module').then(m => m.SearchPageModule)
       },
       {
+        path: 'library',
+        loadChildren: () => import('../library/library.module').then(m => m.LibraryPageModule)
+      },
+      {
         path: '',
         redirectTo: '/tabs/search',
         pathMatch: 'full'

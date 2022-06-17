@@ -16,14 +16,5 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-list lines="none">
-    <ion-item *ngFor="let result of results">
-      <ion-card button (click)="onSearchResultClick(result)">
-        <ion-img [src]="result.imageSrc"></ion-img>
-        <ion-card-content>
-          {{result.title}}
-        </ion-card-content>
-      </ion-card>
-    </ion-item>
-  </ion-list>
+  <app-video-list [videos]="results" (videoClick)="onSearchResultClick($event)"></app-video-list>
 </ion-content>
