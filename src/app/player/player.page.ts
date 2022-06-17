@@ -26,10 +26,12 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   videoPlayerIntervalId: any //NodeJS.Timeout
   isVideoLoaded = false
   currentTime: number = 0
+  remainingTime: number = 0
   initialVolume: number
   currentVolume: number
   videoPlayerReadySubscription: Subscription
   reinitializeVolume = false
+  isVideoPlayerReady = false
 
   // player state
   isPlaying = false
@@ -38,9 +40,7 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('youtubePlayer') youtubePlayer: YouTubePlayer
 
-  constructor(private keyValueStoreService: KeyValueStoreService, private playerService: PlayerService) {
-    console.log(this.keyValueStoreService.get("currentVideo"))
-  }
+  constructor(private keyValueStoreService: KeyValueStoreService, private playerService: PlayerService) { }
 
   ngOnInit() {
     if (!apiLoaded) {
@@ -54,14 +54,14 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    const ro = new ResizeObserver(entries => {
-      for (let entry of entries) {
-        this.playerWidth = entry.contentRect.width
-      }
-    });
+    // const ro = new ResizeObserver(entries => {
+    //   for (let entry of entries) {
+    //     this.playerWidth = entry.contentRect.width
+    //   }
+    // });
 
-    // Observe one or multiple elements
-    ro.observe(document.getElementById("player-row"));
+    // // Observe one or multiple elements
+    // ro.observe(document.getElementById("player-row"));
 
     this.playerServiceSubscription = this.playerService.getCurrentVideoAsObserveable()
       .subscribe(video => this.onCurrentVideoChange(video))
@@ -82,23 +82,34 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
 
   get Buffer() {
     return !isNil(this.youtubePlayer) ? this.youtubePlayer.getVideoLoadedFraction() : 0
-
   }
 
   // Event handlers
   async onCurrentVideoChange(video: Video) {
     this.isVideoLoaded = false
+    this.currentTime = 0
     const currentTimeFromStore: number = this.keyValueStoreService.get(video.id as string)
+    console.log("currentTimeFromStore: ", currentTimeFromStore)
 
     if (currentTimeFromStore) {
       this.startSeconds = currentTimeFromStore
+    } else {
+      this.startSeconds = 0
     }
+
 
     this.videoId = video.id as string
 
     this.videoPlayerReadySubscription = this.youtubePlayer.ready.subscribe(async () => {
       this.isVideoLoaded = true;
+
+      // set videoPlayer to ready after initial loading sequence, to make shure "isVideoLoaded" is set to true on subsequent video loads, which do not involve reinitialisation of Videoplayer
+      this.isVideoPlayerReady = true
     })
+
+    if (this.isVideoPlayerReady) {
+      this.isVideoLoaded = true
+    }
   }
 
   onScrubberClick(clickedPercentage: number) {

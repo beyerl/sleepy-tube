@@ -8,22 +8,22 @@ export class KeyValueStoreService {
 
   constructor() { }
 
-  set<T>(key: string, value: T): void {
-    localStorage.setItem(key, JSON.stringify(value));
+  set<T>(key: string, value: T, storage: typeof localStorage | typeof sessionStorage = localStorage): void {
+    storage.setItem(key, JSON.stringify(value));
   }
 
-  get(key: string): any {
-    const value = localStorage.getItem(key)
+  get(key: string, storage: typeof localStorage | typeof sessionStorage = localStorage): any {
+    const value = storage.getItem(key)
     if (isNil(value))
       return null
     return JSON.parse(value)
   }
 
-  clear(): void {
-    localStorage.clear()
+  clear(storage: typeof localStorage | typeof sessionStorage = localStorage): void {
+    storage.clear()
   }
 
-  delete(key: string): void {
-    localStorage.removeItem(key)
+  delete(key: string, storage: typeof localStorage | typeof sessionStorage = localStorage): void {
+    storage.removeItem(key)
   }
 }
