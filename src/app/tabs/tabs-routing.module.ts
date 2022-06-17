@@ -1,4 +1,3 @@
-import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
@@ -14,12 +13,8 @@ const routes: Routes = [
       },
       {
         path: 'search',
-        loadChildren: () => import('../search/search.module').then(m => m.SearchModule)
+        loadChildren: () => import('../search/search.module').then(m => m.SearchPageModule)
       },
-      // {
-      //   path: 'tab3',
-      //   loadChildren: () => import('../player/player.module').then(m => m.PlayerPageModule)
-      // },
       {
         path: '',
         redirectTo: '/tabs/search',
@@ -29,15 +24,12 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/tabs/player',
+    redirectTo: '/tabs/search',
     pathMatch: 'full'
   }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  providers: [
-    { provide: LocationStrategy, useClass: HashLocationStrategy }
-  ],
 })
 export class TabsPageRoutingModule { }

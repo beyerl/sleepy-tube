@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { isNil } from '../helpers/utils';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class KeyValueStoreService {
 
   constructor() { }

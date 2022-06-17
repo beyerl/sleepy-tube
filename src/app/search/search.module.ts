@@ -1,19 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SearchPageComponent } from './search.page.component';
+
+import { IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
+import { YouTubePlayerModule } from '@angular/youtube-player';
+import { PlayerPageRoutingModule } from '../player/player-routing.module';
+import { SearchPage } from './search.page';
 import { SearchPageRoutingModule } from './search-routing.module';
-import { AppModule } from '../app.module';
-import { KeyValueStoreService } from '../services/key-value-store.service';
-
-
 
 @NgModule({
-  declarations: [SearchPageComponent],
+  declarations: [SearchPage],
   imports: [
     CommonModule,
-    SearchPageRoutingModule,
-    AppModule
-  ],
-  providers: [KeyValueStoreService],
+    FormsModule,
+    IonicModule,
+    SearchPageRoutingModule
+  ]
 })
-export class SearchModule { }
+export class SearchPageModule { }

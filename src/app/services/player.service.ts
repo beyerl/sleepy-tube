@@ -4,7 +4,9 @@ import { isNil } from '../helpers/utils';
 import { Video } from '../models/video.model';
 import { KeyValueStoreService } from './key-value-store.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class PlayerService {
 
   currentVideo: BehaviorSubject<Video> = new BehaviorSubject({

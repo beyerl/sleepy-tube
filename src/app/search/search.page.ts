@@ -10,10 +10,10 @@ import { YoutubeService } from '../services/youtube.service';
 
 @Component({
   selector: 'app-search.page',
-  templateUrl: './search.page.component.html',
-  styleUrls: ['./search.page.component.scss'],
+  templateUrl: './search.page.html',
+  styleUrls: ['./search.page.scss'],
 })
-export class SearchPageComponent implements OnInit {
+export class SearchPage implements OnInit {
 
   searchTerm: string
   results: Video[] = []

@@ -10,17 +10,15 @@ import { MinuteSecondsPipe } from '../pipes/minute-seconds.pipe';
 import { HourMinuteSecondsPipe } from '../pipes/hour-minute-seconds.pipe';
 import { ScrubberComponent } from '../components/scrubber/scrubber.component';
 import { TimerComponent } from '../components/timer/timer.component';
-import { SharedServicesModule } from '../services/shared-services.module';
 
 @NgModule({
+  declarations: [PlayerPage, MinuteSecondsPipe, HourMinuteSecondsPipe, ScrubberComponent, TimerComponent],
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
     PlayerPageRoutingModule,
-    YouTubePlayerModule,
-    SharedServicesModule
-  ],
-  declarations: [PlayerPage, MinuteSecondsPipe, HourMinuteSecondsPipe, ScrubberComponent, TimerComponent]
+    YouTubePlayerModule
+  ]
 })
 export class PlayerPageModule { }

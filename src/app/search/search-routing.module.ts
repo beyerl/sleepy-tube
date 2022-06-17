@@ -1,12 +1,12 @@
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { SearchPageComponent } from './search.page.component';
+import { SearchPage } from './search.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: SearchPageComponent
+    component: SearchPage
   }
 ];
 
