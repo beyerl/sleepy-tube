@@ -2,8 +2,8 @@
   <ion-item *ngFor="let video of videos">
     <ion-card button (click)="onVideoClick(video)">
       <ion-button size="large" class="btn-bookmark" (click)="onBookmarkClick(video, $event)"><ion-icon
-          name="bookmark-outline"></ion-icon></ion-button>
-      <ion-img [src]="video.imageSrc"></ion-img>
+          [name]="isInInsertMode ? 'bookmark-outline' : 'ban-outline'"></ion-icon></ion-button>
+      <ion-img [src]=" video.imageSrc"></ion-img>
       <ion-card-content>
         {{video.title}}
       </ion-card-content>

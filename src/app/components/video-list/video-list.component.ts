@@ -11,6 +11,7 @@ import { KeyValueStoreService } from 'src/app/services/key-value-store.service';
 export class VideoListComponent implements OnInit {
 
   @Input() videos: Video[] = []
+  @Input() isInInsertMode = true
 
   @Output() videoClick = new EventEmitter<Video>()
   @Output() bookmarkClick = new EventEmitter<Video>()

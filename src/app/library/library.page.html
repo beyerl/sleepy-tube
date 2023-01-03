@@ -1,4 +1,4 @@
 <ion-content [fullscreen]="true">
   <app-video-list [videos]="library" (videoClick)="onLibraryResultClick($event)"
-    (bookmarkClick)="onBookmarkClick($event)"></app-video-list>
+    (bookmarkClick)="onBookmarkClick($event)" [isInInsertMode]="false"></app-video-list>
 </ion-content>
