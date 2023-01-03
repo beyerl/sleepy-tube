@@ -8,6 +8,7 @@ import { mapYoutubeRawDataToVideo } from '../mappers/search.mapper';
 import { Video } from '../models/video.model';
 import { PlayerPage } from '../player/player.page';
 import { KeyValueStoreService } from '../services/key-value-store.service';
+import { LibraryService } from '../services/library.service';
 import { PlayerService } from '../services/player.service';
 import { SearchService } from '../services/search.service';
 
@@ -25,7 +26,7 @@ export class SearchPage implements OnInit, AfterViewInit {
 
   @ViewChild("searchInput") searchInput: IonInput
 
-  constructor(private searchService: SearchService, private router: Router, private keyValueStorageService: KeyValueStoreService, private playerService: PlayerService) { }
+  constructor(private searchService: SearchService, private router: Router, private keyValueStorageService: KeyValueStoreService, private playerService: PlayerService, private libraryService: LibraryService) { }
 
   async ngOnInit() {
     const searchTermFromSessionStorage = this.keyValueStorageService.get("searchTerm", sessionStorage)
@@ -54,5 +55,9 @@ export class SearchPage implements OnInit, AfterViewInit {
   onSearchResultClick(video: Video) {
     this.playerService.setCurrentVideo(video)
     this.router.navigateByUrl(`/tabs/player?v=${video.id}`)
+  }
+
+  onBookmarkClick(video: Video) {
+    this.libraryService.add(video)
   }
 }

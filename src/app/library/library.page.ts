@@ -1,9 +1,10 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { isNil } from '../helpers/utils';
+import { Subscription } from 'rxjs';
 import { Video } from '../models/video.model';
 
 import { KeyValueStoreService } from '../services/key-value-store.service';
+import { LibraryService } from '../services/library.service';
 import { PlayerService } from '../services/player.service';
 
 let apiLoaded = false;
@@ -13,21 +14,28 @@ let apiLoaded = false;
   templateUrl: 'library.page.html',
   styleUrls: ['library.page.scss'],
 })
-export class LibraryPage implements OnInit {
+export class LibraryPage implements OnInit, OnDestroy {
 
   library: Video[] = []
+  librarySubscription: Subscription
 
-  constructor(private keyValueStoreService: KeyValueStoreService, private playerService: PlayerService, private router: Router) { }
+  constructor(private playerService: PlayerService, private router: Router, private libraryService: LibraryService) { }
 
   ngOnInit(): void {
-    // Behelfsmässig. Muss so aufgebohrt wrden, dass der State permanent upgedatet wird
-    const library = this.keyValueStoreService.get("library")
-    this.library = !isNil(library) ? library : []
+    this.libraryService.getLibraryAsObserveable().subscribe(l => this.library = l)
   }
 
-  onSearchResultClick(video: Video) {
+  ngOnDestroy(): void {
+    this.librarySubscription.unsubscribe()
+  }
+
+  onLibraryResultClick(video: Video) {
     this.playerService.setCurrentVideo(video)
-    this.router.navigateByUrl(`/tabs/player`)
+    this.router.navigateByUrl(`/tabs/player?v=${video.id}`)
+  }
+
+  onBookmarkClick(video: Video) {
+    this.libraryService.remove(video)
   }
 }
 
