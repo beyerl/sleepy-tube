@@ -11,22 +11,19 @@
         elapsed: {{currentTime | hourMinuteSeconds}}
       </ion-col>
       <ion-col class="font-size-sm ion-text-end">
-        remaining: {{remainingTime | hourMinuteSeconds}}
+        remaining: {{RemainingTime | hourMinuteSeconds}}
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <app-scrubber (clicked)="onScrubberClick($event)" [value]="progress" [buffer]="buffer"
+        <app-scrubber (clicked)="onScrubberClick($event)" [value]="Progress" [buffer]="Buffer"
           [disabled]="!isVideoLoaded"></app-scrubber>
       </ion-col>
     </ion-row>
     <ion-row class="ion-justify-content-center" id="player-row" [hidden]="true">
-      <app-video-player-wrapper #videoPlayerWrapper [videoId]="videoId" [startSeconds]="startSeconds"
-        [seekEvents]="seekSubject.asObservable()" [playEvents]="playSubject.asObservable()"
-        [pauseEvents]="pauseSubject.asObservable()" [volumeEvents]="volumeSubject.asObservable()"
-        (currentTime)="this.currentTime = $event" (remainingTime)="this.remainingTime = $event"
-        (progress)="this.progress = $event" (buffer)="this.buffer = $event" (duration)="this.duration = $event"
-        (volume)="this.volume = $event" (ready)="onVideoPlayerReady($event)"></app-video-player-wrapper>
+      <youtube-player #youtubePlayer [videoId]="videoId" [width]="playerWidth" [height]="playerHeight"
+        suggestedQuality="highres" [startSeconds]="startSeconds">
+      </youtube-player>
     </ion-row>
     <ion-row class="ion-justify-content-between ion-align-items-center" id="player-row">
       <ion-col>
