@@ -9,7 +9,7 @@ import { Video } from '../models/video.model';
 import { PlayerPage } from '../player/player.page';
 import { KeyValueStoreService } from '../services/key-value-store.service';
 import { PlayerService } from '../services/player.service';
-import { YoutubeService } from '../services/youtube.service';
+import { SearchService } from '../services/search.service';
 
 @Component({
   selector: 'app-search.page',
@@ -25,7 +25,7 @@ export class SearchPage implements OnInit, AfterViewInit {
 
   @ViewChild("searchInput") searchInput: IonInput
 
-  constructor(private youtubeService: YoutubeService, private router: Router, private keyValueStorageService: KeyValueStoreService) { }
+  constructor(private searchService: SearchService, private router: Router, private keyValueStorageService: KeyValueStoreService) { }
 
   async ngOnInit() {
     const searchTermFromSessionStorage = this.keyValueStorageService.get("searchTerm", sessionStorage)
@@ -45,7 +45,7 @@ export class SearchPage implements OnInit, AfterViewInit {
   async onSearch(searchTerm: string | number) {
     this.searchTerm = searchTerm as string + (this.searchForAudiobooksOnly ? this.AudiobooksSearchString : "")
 
-    this.results = (await this.youtubeService.search(this.searchTerm as string, 15))["items"]
+    this.results = (await this.searchService.search(this.searchTerm as string, 15))["items"]
       .map(rawData => mapYoutubeRawDataToVideo(rawData))
 
     this.keyValueStorageService.set("searchTerm", searchTerm, sessionStorage)

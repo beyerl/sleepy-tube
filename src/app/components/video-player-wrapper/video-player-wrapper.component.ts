@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { YouTubePlayer } from '@angular/youtube-player';
 import { interval, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { isNil } from 'src/app/helpers/utils';
 
 let apiLoaded = false;
