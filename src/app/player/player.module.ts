@@ -10,9 +10,10 @@ import { MinuteSecondsPipe } from '../pipes/minute-seconds.pipe';
 import { HourMinuteSecondsPipe } from '../pipes/hour-minute-seconds.pipe';
 import { ScrubberComponent } from '../components/scrubber/scrubber.component';
 import { TimerComponent } from '../components/timer/timer.component';
+import { VideoPlayerWrapperComponent } from '../components/video-player-wrapper/video-player-wrapper.component';
 
 @NgModule({
-  declarations: [PlayerPage, MinuteSecondsPipe, HourMinuteSecondsPipe, ScrubberComponent, TimerComponent],
+  declarations: [PlayerPage, MinuteSecondsPipe, HourMinuteSecondsPipe, ScrubberComponent, TimerComponent, VideoPlayerWrapperComponent],
   imports: [
     CommonModule,
     FormsModule,
