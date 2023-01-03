@@ -2,8 +2,15 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-img src="https://img.youtube.com/vi/{{videoId}}/hqdefault.jpg">
+        <ion-img [src]="video?.imageSrc">
         </ion-img>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-justify-content-between">
+      <ion-col>
+        {{(video?.title?.length>TITLE_MAX_LENGTH)? (video?.title |
+        slice:0:TITLE_MAX_LENGTH)+'...':(video?.title)
+        }}
       </ion-col>
     </ion-row>
     <ion-row class="ion-justify-content-between">
@@ -21,7 +28,7 @@
       </ion-col>
     </ion-row>
     <ion-row class="ion-justify-content-center" id="player-row" [hidden]="true">
-      <app-video-player-wrapper #videoPlayerWrapper [videoId]="videoId" [startSeconds]="startSeconds"
+      <app-video-player-wrapper #videoPlayerWrapper [videoId]="video?.id" [startSeconds]="startSeconds"
         [seekEvents]="seekSubject.asObservable()" [playEvents]="playSubject.asObservable()"
         [pauseEvents]="pauseSubject.asObservable()" [volumeEvents]="volumeSubject.asObservable()"
         (currentTime)="this.currentTime = $event" (remainingTime)="this.remainingTime = $event"

@@ -6,6 +6,7 @@ import { isNil } from '../helpers/utils';
 import { Video } from '../models/video.model';
 import { KeyValueStoreService } from '../services/key-value-store.service';
 import { PlayerService } from '../services/player.service';
+import { SearchService } from '../services/search.service';
 
 
 @Component({
@@ -16,9 +17,10 @@ import { PlayerService } from '../services/player.service';
 export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   // constants
   SKIP_TIME_IN_SECONDS = 30
+  TITLE_MAX_LENGTH = 100
 
   // videoplayer
-  videoId: string
+  video: Video
   startSeconds: number
   videoPlayerIntervalId: any //NodeJS.Timeout
   isVideoLoaded = false
@@ -48,18 +50,19 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   pauseSubject = new Subject<void>();
   volumeSubject = new Subject<number>();
 
-  constructor(private keyValueStoreService: KeyValueStoreService, private playerService: PlayerService, private route: ActivatedRoute) {
+  constructor(private keyValueStoreService: KeyValueStoreService, private playerService: PlayerService, private route: ActivatedRoute, private searchService: SearchService) {
     this.ready$ = new Observable(subscriber => this.readySubscriber = subscriber)
   }
 
-  ngOnInit() {
-    this.route.queryParams.subscribe(p => {
+  async ngOnInit() {
+    this.route.queryParams.subscribe(async p => {
       if (!isNil(p.v)) {
-        this.playerService.setCurrentVideo({
-          id: p.v,
-          imageSrc: '',
-          title: '',
-        })
+        const isPlayerStateUpToDate = this.playerService.currentVideo.getValue().id === p.v
+
+        if (!isPlayerStateUpToDate) {
+          const video = await this.searchService.getVideoInfo(p.v)
+          this.playerService.setCurrentVideo(video)
+        }
       };
     });
   }
@@ -75,6 +78,7 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
 
   // Event handlers
   async onCurrentVideoChange(video: Video) {
+    console.log("🚀 ~ file: player.page.ts:80 ~ PlayerPage ~ onCurrentVideoChange ~ video", video)
     this.isVideoLoaded = false
     this.currentTime = 0
     const currentTimeFromStore: number = this.keyValueStoreService.get(video.id as string)
@@ -86,7 +90,7 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    this.videoId = video.id as string
+    this.video = video
 
     this.videoPlayerReadySubscription = this.ready$.subscribe(async () => {
       this.isVideoLoaded = true;
@@ -130,7 +134,7 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.videoPlayerIntervalId = setInterval(() => {
-      this.keyValueStoreService.set(this.videoId, this.currentTime)
+      this.keyValueStoreService.set(this.video.id, this.currentTime)
     }, 1000)
 
     this.isPlaying = !this.isPlaying
@@ -138,7 +142,7 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
 
   onPause() {
     this.pauseSubject.next()
-    this.keyValueStoreService.set(this.videoId, this.currentTime)
+    this.keyValueStoreService.set(this.video.id, this.currentTime)
 
     if (!isNil(this.videoPlayerIntervalId)) {
       clearInterval(this.videoPlayerIntervalId)
@@ -148,11 +152,11 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onSkipForward() {
-    this.seekSubject.next(Math.round(Number(this.keyValueStoreService.get(this.videoId as string))) + this.SKIP_TIME_IN_SECONDS)
+    this.seekSubject.next(Math.round(Number(this.keyValueStoreService.get(this.video.id as string))) + this.SKIP_TIME_IN_SECONDS)
   }
 
   onSkipBackward() {
-    this.seekSubject.next(Math.round(Number(this.keyValueStoreService.get(this.videoId as string))) - this.SKIP_TIME_IN_SECONDS)
+    this.seekSubject.next(Math.round(Number(this.keyValueStoreService.get(this.video.id as string))) - this.SKIP_TIME_IN_SECONDS)
   }
 
   onTimerStart() {
@@ -170,7 +174,7 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
 
   onTimerElapsed() {
     this.onPause()
-    this.keyValueStoreService.set(this.videoId, Math.round(this.keyValueStoreService.get(this.videoId) - 15))
+    this.keyValueStoreService.set(this.video.id, Math.round(this.keyValueStoreService.get(this.video.id) - 15))
     this.reinitializeVolume = true
   }
 

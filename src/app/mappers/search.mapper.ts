@@ -5,3 +5,9 @@ export const mapYoutubeRawDataToVideo = (rawData: any): Video => ({
     imageSrc: rawData.snippet.thumbnails.medium.url,
     title: rawData.snippet.title
 })
+
+export const mapYoutubeInfoRawDataToVideo = (rawData: any): Video => ({
+    id: rawData.id,
+    imageSrc: rawData.snippet.thumbnails.medium.url,
+    title: rawData.snippet.title
+})

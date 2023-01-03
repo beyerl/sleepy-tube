@@ -25,7 +25,7 @@ export class SearchPage implements OnInit, AfterViewInit {
 
   @ViewChild("searchInput") searchInput: IonInput
 
-  constructor(private searchService: SearchService, private router: Router, private keyValueStorageService: KeyValueStoreService) { }
+  constructor(private searchService: SearchService, private router: Router, private keyValueStorageService: KeyValueStoreService, private playerService: PlayerService) { }
 
   async ngOnInit() {
     const searchTermFromSessionStorage = this.keyValueStorageService.get("searchTerm", sessionStorage)
@@ -45,7 +45,7 @@ export class SearchPage implements OnInit, AfterViewInit {
   async onSearch(searchTerm: string | number) {
     this.searchTerm = searchTerm as string + (this.searchForAudiobooksOnly ? this.AudiobooksSearchString : "")
 
-    this.results = (await this.searchService.search(this.searchTerm as string, 15))["items"]
+    this.results = (await this.searchService.getSearchResults(this.searchTerm as string, 15))["items"]
       .map(rawData => mapYoutubeRawDataToVideo(rawData))
 
     this.keyValueStorageService.set("searchTerm", searchTerm, sessionStorage)
@@ -53,6 +53,7 @@ export class SearchPage implements OnInit, AfterViewInit {
   }
 
   onSearchResultClick(video: Video) {
+    this.playerService.setCurrentVideo(video)
     this.router.navigateByUrl(`/tabs/player?v=${video.id}`)
   }
 }
