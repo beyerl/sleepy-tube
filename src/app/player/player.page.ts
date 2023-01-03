@@ -78,6 +78,9 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
 
   // Event handlers
   async onCurrentVideoChange(video: Video) {
+    if (this.isPlaying) {
+      this.onPause()
+    }
     this.isVideoLoaded = false
     this.currentTime = 0
     const currentTimeFromStore: number = this.keyValueStoreService.get(video.id as string)
