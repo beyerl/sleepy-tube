@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { YouTubePlayer } from '@angular/youtube-player';
 import { interval, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -11,7 +11,7 @@ let apiLoaded = false;
   templateUrl: './video-player-wrapper.component.html',
   styleUrls: ['./video-player-wrapper.component.scss'],
 })
-export class VideoPlayerWrapperComponent implements OnInit, OnDestroy, AfterViewInit {
+export class VideoPlayerWrapperComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
   // constants
   playerWidth: number = window.innerWidth
   playerHeight = 100
@@ -20,6 +20,7 @@ export class VideoPlayerWrapperComponent implements OnInit, OnDestroy, AfterView
   //video player state
   @Input() videoId: string
   @Input() startSeconds: number
+  private isInitialPlay = true
 
   //event triggers
   @Input() seekEvents: Observable<number>;
@@ -91,6 +92,12 @@ export class VideoPlayerWrapperComponent implements OnInit, OnDestroy, AfterView
 
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!isNil(changes.videoId?.previousValue) && !isNil(changes.videoId?.currentValue) && (changes.videoId?.previousValue !== changes.videoId?.currentValue)) {
+      this.isInitialPlay = true
+    }
+  }
+
   ngOnDestroy() {
     this.seekEventsSubscription.unsubscribe()
     this.playEventsSubscription.unsubscribe()
@@ -107,6 +114,10 @@ export class VideoPlayerWrapperComponent implements OnInit, OnDestroy, AfterView
   }
 
   onPlay() {
+    if (this.isInitialPlay) {
+      this.youtubePlayer.seekTo(this.startSeconds, true)
+      this.isInitialPlay = false
+    }
     this.youtubePlayer.playVideo()
   }
 
