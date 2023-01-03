@@ -5,15 +5,16 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { SearchPage } from './search.page';
 import { SearchPageRoutingModule } from './search-routing.module';
-import { VideoListComponent } from '../components/video-list/video-list.component';
+import { ComponentsModule } from '../components/components/components.module';
 
 @NgModule({
-  declarations: [SearchPage, VideoListComponent],
+  declarations: [SearchPage],
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    SearchPageRoutingModule
+    SearchPageRoutingModule,
+    ComponentsModule
   ]
 })
 export class SearchPageModule { }

@@ -5,16 +5,17 @@ import { FormsModule } from '@angular/forms';
 
 import { LibraryPage } from './library.page';
 import { LibraryPageRoutingModule } from './library-routing.module';
-import { VideoListComponent } from '../components/video-list/video-list.component';
+import { ComponentsModule } from '../components/components/components.module';
 
 
 @NgModule({
-  declarations: [LibraryPage, VideoListComponent],
+  declarations: [LibraryPage],
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    LibraryPageRoutingModule
+    LibraryPageRoutingModule,
+    ComponentsModule
   ]
 })
 export class LibraryPageModule { }
