@@ -45,8 +45,7 @@ export class SearchPage implements OnInit, AfterViewInit {
   async onSearch(searchTerm: string | number) {
     this.searchTerm = searchTerm as string + (this.searchForAudiobooksOnly ? this.AudiobooksSearchString : "")
 
-    this.results = (await this.searchService.getSearchResults(this.searchTerm as string, 15))["items"]
-      .map(rawData => mapYoutubeRawDataToVideo(rawData))
+    this.results = await this.searchService.getSearchResults(this.searchTerm as string, 15)
 
     this.keyValueStorageService.set("searchTerm", searchTerm, sessionStorage)
     this.keyValueStorageService.set("results", this.results, sessionStorage)
