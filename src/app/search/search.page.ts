@@ -6,6 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { isNil } from '../helpers/utils';
 import { mapYoutubeRawDataToVideo } from '../mappers/search.mapper';
 import { Video } from '../models/video.model';
+import { PlayerPage } from '../player/player.page';
 import { KeyValueStoreService } from '../services/key-value-store.service';
 import { PlayerService } from '../services/player.service';
 import { YoutubeService } from '../services/youtube.service';
@@ -24,11 +25,16 @@ export class SearchPage implements OnInit, AfterViewInit {
 
   @ViewChild("searchInput") searchInput: IonInput
 
-  constructor(private youtubeService: YoutubeService, private router: Router, private playerService: PlayerService, private keyValueStorageService: KeyValueStoreService) { }
+  constructor(private youtubeService: YoutubeService, private router: Router, private keyValueStorageService: KeyValueStoreService) { }
 
   async ngOnInit() {
-    this.searchTerm = this.keyValueStorageService.get("searchTerm", sessionStorage)
-    this.results = this.keyValueStorageService.get("results", sessionStorage)
+    const searchTermFromSessionStorage = this.keyValueStorageService.get("searchTerm", sessionStorage)
+    if (!isNil(searchTermFromSessionStorage))
+      this.searchTerm = searchTermFromSessionStorage
+
+    const resultsFromSessionStorage = this.keyValueStorageService.get("results", sessionStorage)
+    if (!isNil(resultsFromSessionStorage))
+      this.results = resultsFromSessionStorage
   }
 
   ngAfterViewInit() {
@@ -47,7 +53,6 @@ export class SearchPage implements OnInit, AfterViewInit {
   }
 
   onSearchResultClick(video: Video) {
-    this.playerService.setCurrentVideo(video)
-    this.router.navigateByUrl(`/tabs/player`)
+    this.router.navigateByUrl(`/tabs/player?v=${video.id}`)
   }
 }

@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { YouTubePlayer } from '@angular/youtube-player';
 import { Subscription } from 'rxjs';
 import { isNil } from '../helpers/utils';
@@ -40,9 +40,20 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('youtubePlayer') youtubePlayer: YouTubePlayer
 
-  constructor(private keyValueStoreService: KeyValueStoreService, private playerService: PlayerService) { }
+  constructor(private keyValueStoreService: KeyValueStoreService, private playerService: PlayerService, private route: ActivatedRoute) {
+  }
 
   ngOnInit() {
+    this.route.queryParams.subscribe(p => {
+      if (!isNil(p.v)) {
+        this.playerService.setCurrentVideo({
+          id: p.v,
+          imageSrc: '',
+          title: '',
+        })
+      };
+    });
+
     if (!apiLoaded) {
       // This code loads the IFrame Player API code asynchronously, according to the instructions at
       // https://developers.google.com/youtube/iframe_api_reference#Getting_Started
@@ -73,7 +84,7 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
 
   // Getters
   get RemainingTime() {
-    return !isNil(this.youtubePlayer) ? Math.round(this.youtubePlayer.getDuration()) - this.currentTime : 0
+    return !isNil(this.youtubePlayer) && !isNaN(this.youtubePlayer?.getDuration()) ? Math.round(this.youtubePlayer.getDuration()) - this.currentTime : 0
   }
 
   get Progress() {
@@ -89,7 +100,6 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
     this.isVideoLoaded = false
     this.currentTime = 0
     const currentTimeFromStore: number = this.keyValueStoreService.get(video.id as string)
-    console.log("currentTimeFromStore: ", currentTimeFromStore)
 
     if (currentTimeFromStore) {
       this.startSeconds = currentTimeFromStore
