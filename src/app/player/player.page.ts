@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { YouTubePlayer } from '@angular/youtube-player';
 import { Observable, Subject, Subscriber, Subscription } from 'rxjs';
 import { isNil } from '../helpers/utils';
 import { Video } from '../models/video.model';
 import { KeyValueStoreService } from '../services/key-value-store.service';
+import { LibraryService } from '../services/library.service';
 import { PlayerService } from '../services/player.service';
 import { SearchService } from '../services/search.service';
 
@@ -50,7 +50,7 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
   pauseSubject = new Subject<void>();
   volumeSubject = new Subject<number>();
 
-  constructor(private keyValueStoreService: KeyValueStoreService, private playerService: PlayerService, private route: ActivatedRoute, private searchService: SearchService) {
+  constructor(private keyValueStoreService: KeyValueStoreService, private playerService: PlayerService, private route: ActivatedRoute, private searchService: SearchService, private libraryService: LibraryService) {
     this.ready$ = new Observable(subscriber => this.readySubscriber = subscriber)
   }
 
@@ -78,7 +78,6 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
 
   // Event handlers
   async onCurrentVideoChange(video: Video) {
-    console.log("🚀 ~ file: player.page.ts:80 ~ PlayerPage ~ onCurrentVideoChange ~ video", video)
     this.isVideoLoaded = false
     this.currentTime = 0
     const currentTimeFromStore: number = this.keyValueStoreService.get(video.id as string)
@@ -180,6 +179,10 @@ export class PlayerPage implements OnInit, OnDestroy, AfterViewInit {
 
   onVideoPlayerReady(isReady: boolean) {
     this.readySubscriber.next(isReady)
+  }
+
+  onBookmarkClick() {
+    this.libraryService.add(this.video)
   }
 }
 
